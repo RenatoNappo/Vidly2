@@ -1,0 +1,18 @@
+﻿@model Vidly2.Models.Customer
+
+@{
+    ViewBag.Title = "CustomerDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Customer Details</h2>
+<br />
+<h4>@Model.Name</h4>
+@if (Model.BirthDate != null)
+{
+    <h4>Birth Date : @Model.BirthDate.Value.ToShortDateString()</h4>
+}
+<br />
+<br />
+@Html.ActionLink("Customer List", "Index", "Customers")
+
