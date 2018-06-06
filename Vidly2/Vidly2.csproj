@@ -220,6 +220,14 @@
     <Compile Include="Migrations\201806060808063_AddAnnotationsToMovie.Designer.cs">
       <DependentUpon>201806060808063_AddAnnotationsToMovie.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806060942145_updatedb.cs" />
+    <Compile Include="Migrations\201806060942145_updatedb.Designer.cs">
+      <DependentUpon>201806060942145_updatedb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806061312167_MakeGenreTypeIDRequiredInMovie.cs" />
+    <Compile Include="Migrations\201806061312167_MakeGenreTypeIDRequiredInMovie.Designer.cs">
+      <DependentUpon>201806061312167_MakeGenreTypeIDRequiredInMovie.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -343,6 +351,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806060808063_AddAnnotationsToMovie.resx">
       <DependentUpon>201806060808063_AddAnnotationsToMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806060942145_updatedb.resx">
+      <DependentUpon>201806060942145_updatedb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806061312167_MakeGenreTypeIDRequiredInMovie.resx">
+      <DependentUpon>201806061312167_MakeGenreTypeIDRequiredInMovie.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

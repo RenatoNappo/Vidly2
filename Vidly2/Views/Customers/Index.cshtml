@@ -13,10 +13,9 @@
 }
 else
 {
-    <button class="btn btn-primary">New Customer</button>
-    <br/>
-    <br />
-    <table class="table table-bordered table-hover">
+    @Html.ActionLink("New Customer", "NewCustomer", "Customers", null, new { @class = "btn btn-primary" })
+
+    <table class="table table-hover">
         <thead>
             <tr>
                 <th scope="col">Customer</th>
