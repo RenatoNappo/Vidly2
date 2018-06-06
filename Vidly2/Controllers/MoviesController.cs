@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Vidly2.Models;
 using System.Data.Entity;
+using Vidly2.ViewModels;
 
 namespace Vidly2.Controllers
 {
@@ -23,9 +24,55 @@ namespace Vidly2.Controllers
         }
 
 
-        public ActionResult Edit(int id)
+        public ActionResult SaveMovie(MovieFormViewModel viewModel)
         {
-            return Content("id=" + id);
+            Movie movie = viewModel.Movie;
+            if(movie.Id == 0)
+            {
+                _context.Movies.Add(movie);
+            }
+            else
+            {
+                Movie movieToDb = _context.Movies.Single(m => m.Id == movie.Id);
+
+                movieToDb.Name = movie.Name;
+                movieToDb.ReleaseDate = movie.ReleaseDate;
+                movieToDb.GenreTypeId = movie.GenreTypeId;
+                movieToDb.NumberInStock = movie.NumberInStock;
+            }
+
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Movies");
+        }
+
+        [Route("movies/newmovie")]
+        public ActionResult NewMovie()
+        {
+            var Genres = _context.Genres.ToList();
+            MovieFormViewModel viewModel = new MovieFormViewModel
+            {
+                Genre = Genres
+            };
+
+            return View("MovieForm",viewModel);
+        }
+
+
+        public ActionResult EditMovie(int id)
+        {
+            Movie movie = _context.Movies.SingleOrDefault(m => m.Id == id);
+
+            if (movie == null)
+                return HttpNotFound("The selected Moview was not found in the database");
+
+            MovieFormViewModel viewModel = new MovieFormViewModel
+            {
+                Genre = _context.Genres.ToList(),
+                Movie = movie
+
+            };
+
+            return View("MovieForm", viewModel);
         }
 
 
@@ -44,11 +91,6 @@ namespace Vidly2.Controllers
         }
 
 
-        [Route("movies/release/{year:regex(\\d{4})}/{month:regex(\\d{2}):range(1,12)}")]
-        public ActionResult ByReleaseDate(int year, int month)
-        {
-            return Content(year + "/" + month);
-        }
 
 
         [Route("movies/MovieDetails/{id}")]
@@ -73,3 +115,10 @@ namespace Vidly2.Controllers
         }
     }
 }
+
+
+//[Route("movies/release/{year:regex(\\d{4})}/{month:regex(\\d{2}):range(1,12)}")]
+//public ActionResult ByReleaseDate(int year, int month)
+//{
+//    return Content(year + "/" + month);
+//}
