@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,6 +10,7 @@ namespace Vidly2.Models
 {
     public class Movie
     {
+        [Required]
         public int Id { get; set; }
 
         [Required] 
@@ -19,10 +21,12 @@ namespace Vidly2.Models
         [Display(Name = "Release Date")]
         public DateTime ReleaseDate { get; set; }
 
+        [Required]
         [Display(Name = "Date Added")]
         public DateTime DateAdded { get; set; }
 
-        [Range(0, 100)]
+        [Required]
+        [Range(1, 20)]
         [Display(Name = "Number In Stock")]
         public int NumberInStock { get; set; }
 
@@ -30,6 +34,7 @@ namespace Vidly2.Models
         [ForeignKey("GenreTypeId")]
         public Genre Genre { get; set; }
 
+        [Required]
         [Display(Name = "Genre")]
         public int GenreTypeId { get; set; }
     }

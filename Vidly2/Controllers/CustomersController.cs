@@ -26,9 +26,20 @@ namespace Vidly2.Controllers
 
 
         [HttpPost]
-        public ActionResult SaveCustomer(CustomerFormViewModel viewModel)
+        [ValidateAntiForgeryToken]
+        public ActionResult SaveCustomer(Customer customer)
         {
-            var customer = viewModel.Customer;
+            if(!ModelState.IsValid)
+            {
+                var viewModel = new CustomerFormViewModel(customer)
+                {
+                    MembershipTypes = _context.MembershipTypes.ToList(),
+
+                };
+
+                return View("CustomerForm", viewModel);
+            }
+
             if (customer.Id == 0)
             {
                 _context.Customers.Add(customer);
@@ -65,10 +76,10 @@ namespace Vidly2.Controllers
             if (customer == null)
                 return HttpNotFound("The selected customer was not found in the database");
 
-            CustomerFormViewModel viewModel = new CustomerFormViewModel
+            CustomerFormViewModel viewModel = new CustomerFormViewModel(customer)
             {
-                Customer = customer,
                 MembershipTypes = _context.MembershipTypes.ToList()
+
             };
             return View("CustomerForm", viewModel);
         }
