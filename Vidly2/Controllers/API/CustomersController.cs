@@ -7,6 +7,9 @@ using System.Web.Http;
 using Vidly2.Models;
 using Vidly2.DTOs;
 using AutoMapper;
+using System.Data.Entity;
+using System.Data.Entity.Validation;
+
 
 namespace Vidly2.Controllers.API
 {
@@ -24,73 +27,89 @@ namespace Vidly2.Controllers.API
 
         // GET /api/customers
         [HttpGet]
-        public IEnumerable<CustomerDTO> GetCustomers()
+        public IHttpActionResult GetCustomers()
         {
-            return _context.Customers.ToList().Select(Mapper.Map<Customer, CustomerDTO>);
-        }
+            var customerDtos = _context.Customers
+                .Include(c => c.MembershipType)
+                .ToList()
+                .Select(Mapper.Map<Customer, CustomerDTO>);
 
+            return Ok(customerDtos);
+        }
 
 
         // GET /api/customer/{id}
         [HttpGet]
-        public CustomerDTO GetCUstomer(int id)
+        public IHttpActionResult GetCUstomer(int id)
         {
             var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (customer == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
-            return Mapper.Map<Customer,CustomerDTO>(customer);
+            return Ok(Mapper.Map<Customer, CustomerDTO>(customer));
         }
 
-        
+
         // POST /api/customers
         [HttpPost]
-        public CustomerDTO CreateCustomer(CustomerDTO customerdto)
+        public IHttpActionResult CreateCustomer(CustomerDTO customerdto)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest("The data you have posted is invalid.");
             }
-            var customerToOaDD = Mapper.Map<CustomerDTO,Customer>(customerdto);
+            var customerToOaDD = Mapper.Map<CustomerDTO, Customer>(customerdto);
             _context.Customers.Add(customerToOaDD);
             _context.SaveChanges();
 
             customerdto.Id = customerToOaDD.Id;
 
-            return customerdto;
+            return Created(new Uri(Request.RequestUri + "/" + customerToOaDD.Id), customerToOaDD);
         }
+
 
 
         // PUT api/customers/{id, customer}
         [HttpPut]
-        public void UpdateCustomer(int id, CustomerDTO customerdto)
+        [Route("api/customers/UpdateCustomer/{id}")]
+        public IHttpActionResult UpdateCustomer(int id, CustomerDTO customerdto)
         {
             if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest("The data you have posted is invalid.");
 
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (customerInDb == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
             Mapper.Map(customerdto, customerInDb);
 
-            _context.SaveChanges();
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch(DbEntityValidationException e)
+            {
+                Console.WriteLine(e);
+            }
+            return Ok(customerdto);
         }
+
 
 
         // DELETE api/customers/{id}
         [HttpDelete]
-        public void DeleteCustomer(int id)
+        public IHttpActionResult DeleteCustomer(int id)
         {
             var customerToDelete = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (customerToDelete == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
             _context.Customers.Remove(customerToDelete);
             _context.SaveChanges();
+            return Ok();
         }
     }
 }
