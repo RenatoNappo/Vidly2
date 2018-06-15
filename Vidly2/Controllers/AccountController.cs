@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Vidly2.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Vidly2.Controllers
 {
@@ -151,7 +152,12 @@ namespace Vidly2.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    DrivingLicense = model.DrivingLicense
+                };
+
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -367,7 +373,11 @@ namespace Vidly2.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    DrivingLicense = model.DrivingLicense
+                };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -483,3 +493,18 @@ namespace Vidly2.Controllers
         #endregion
     }
 }
+
+
+
+
+
+/*This is used to apply the named role to each new user
+add it to the Register(RegisterViewmodel mode) action
+/after the new user has successfully been created*/
+
+
+//var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+//var roleManager = new RoleManager<IdentityRole>(roleStore);
+//await roleManager.CreateAsync(new IdentityRole("CanManageMovies"));
+//await UserManager.AddToRoleAsync(user.Id, "CanManageMovies");
+
