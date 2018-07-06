@@ -7,6 +7,7 @@ using Vidly2.Models;
 using System.Data.Entity;
 using Vidly2.ViewModels;
 using System.Data.Entity.Validation;
+using System.Runtime.Caching;
 
 namespace Vidly2.Controllers
 {
@@ -111,6 +112,7 @@ namespace Vidly2.Controllers
 
 
         [Route("movies/MovieDetails/{id}")]
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult MovieDetails(int? id)
         {
             if (!id.HasValue)
@@ -139,3 +141,26 @@ namespace Vidly2.Controllers
 //{
 //    return Content(year + "/" + month);
 //}
+
+
+/*
+  
+ Data Caching Example
+
+    1. Reference System.Runtime.Caching
+    2. Add a using statement for System.Runtime.Caching
+
+
+    if (MemoryCache.Default["Genres"] == null)
+        MemoryCache.Default["Genres"] = _context.Genres.ToList();
+
+    var genres = MemoryCache.Default["Genres"] as IEnumerable<Genre>;
+
+
+    Default is a static property of the class
+    It's like a dictionary so an indexer can be used to access items in it
+    Items are given keys (string) which can be used when accessing them
+
+    Cast as IEnumerable<T> so you can iterate through the collection
+
+*/
